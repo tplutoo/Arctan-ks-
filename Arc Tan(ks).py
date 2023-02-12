@@ -20,8 +20,8 @@ class level:
         self.enemyTank = enemyTank
         self.increment = increment
         self.obstacles = obstacles
-
-
+        
+        
 level1 = level([0,0],[3,3],1,[[0,10,1,9.5],[-5,10,1,9.5]])
 level2 = level([-1,1],[1,1],1,[[0,10,1,9.5]])
 
@@ -35,8 +35,9 @@ def main():
     pygame.display.set_caption('ArcTan(ks)')
 
     font_color=(0,150,250)
-    font_obj=pygame.font.Font("coure.fon",25)
+    font_obj=pygame.font.Font("C:\Windows\Fonts\coure.fon",25)
     blockSize = round(float((WINDOW_HEIGHT/20)))
+
 
 
     icon = pygame.image.load('tank.png')
@@ -51,9 +52,9 @@ def main():
 
     #Enemy
     enemyImg = pygame.image.load("enemy.png")
-    enemyImg= pygame.transform.scale(enemyImg, enemy_size)
+    enemyImg= pygame.transform.scale(enemyImg, enemy_size)    
 
-
+    
 
     while True:
         count = 1
@@ -69,8 +70,8 @@ def main():
 
 
 def drawGrid(increment):
-
-
+    
+    
     for x in range(round(float(WINDOW_WIDTH*(7/16))), WINDOW_WIDTH, blockSize):
         for y in range(0, WINDOW_HEIGHT, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
@@ -82,7 +83,7 @@ def drawGrid(increment):
         text_obj=font_obj.render(str(round(float((count-10)*increment),2)),True,font_color)
         SCREEN.blit(text_obj,(WINDOW_WIDTH*(7/16)+(count*blockSize-blockSize*3/8),WINDOW_HEIGHT/2))
         count += 1
-
+        
     count = 0
     for b in range(20+1):
         text_obj=font_obj.render(str(-(round(float((count-10)*increment),2))),True,font_color)
@@ -94,7 +95,7 @@ def fight(allyTank,enemyTank,increment,obstacles):
     #coordinates of character
     x = (WINDOW_WIDTH*(23/32))+(allyTank[0]*blockSize)-20
     y = (WINDOW_HEIGHT/2)-(allyTank[1]*blockSize)-20
-
+    
     ball_x = x + 20
     ball_y = y + 12
     #width and height of character
@@ -126,7 +127,7 @@ def fight(allyTank,enemyTank,increment,obstacles):
         SCREEN.blit(playerImg, (x,y))
     def enemy(x, y):
         SCREEN.blit(enemyImg, (x,y))
-
+    
     def isCollision(enemyX, enemyY, ball_x, ball_y):
         distance = math.sqrt((math.pow(((enemyX)-ball_x),2)) + (math.pow(((enemyY+30)-ball_y), 2)))
         if distance < 10:
@@ -213,6 +214,6 @@ def fight(allyTank,enemyTank,increment,obstacles):
 
 
 
-
-
+    
+    
 main()
