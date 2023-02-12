@@ -2,17 +2,19 @@ import pygame, sys
 import tkinter as tk
 import math
 
+
+count = 1
 root = tk.Tk()
 
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
 
 BLACK = (0, 0, 0)
 GREEN = (0, 100, 0)
 BLUE = (65, 105, 225)
 
-WINDOW_HEIGHT = screen_height
-WINDOW_WIDTH = screen_width
+WINDOW_HEIGHT = height
+WINDOW_WIDTH = width
 
 class level:
     def __init__(self,allyTank,enemyTank,increment,obstacles):
@@ -20,22 +22,21 @@ class level:
         self.enemyTank = enemyTank
         self.increment = increment
         self.obstacles = obstacles
-        
-        
-level1 = level([0,0],[3,3],1,[[0,10,1,9.5],[-5,10,1,9.5]])
-level2 = level([-1,1],[1,1],1,[[0,10,1,9.5]])
+
+
+level1 = level([0,0],[1, 3],1,[[0,10,1,9.5],[-5,10,1,9.5]])
+level2 = level([-1,1],[2,1],1,[[0,10,1,9.5]])
 
 
 def main():
     global SCREEN, CLOCK, font_color, font_obj, playerImg, enemyImg, blockSize
     pygame.init()
     SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    CLOCK = pygame.time.Clock()
     SCREEN.fill(BLACK)
     pygame.display.set_caption('ArcTan(ks)')
 
     font_color=(0,150,250)
-    font_obj=pygame.font.Font("C:\Windows\Fonts\coure.fon",25)
+    font_obj=pygame.font.Font("coure.fon",25)
     blockSize = round(float((WINDOW_HEIGHT/20)))
 
 
@@ -52,26 +53,17 @@ def main():
 
     #Enemy
     enemyImg = pygame.image.load("enemy.png")
-    enemyImg= pygame.transform.scale(enemyImg, enemy_size)    
+    enemyImg= pygame.transform.scale(enemyImg, enemy_size)
 
-    
+
 
     while True:
-        count = 1
-        for i in range(2):
-            drawGrid(eval("level"+str(count)).increment)
-            fight(eval("level"+str(count)).allyTank,eval("level"+str(count)).enemyTank,eval("level"+str(count)).increment,eval("level"+str(count)).obstacles)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+
+        fight(eval("level"+str(count)).allyTank,eval("level"+str(count)).enemyTank,eval("level"+str(count)).increment,eval("level"+str(count)).obstacles)
 
         pygame.display.update()
 
-
 def drawGrid(increment):
-    
-    
     for x in range(round(float(WINDOW_WIDTH*(7/16))), WINDOW_WIDTH, blockSize):
         for y in range(0, WINDOW_HEIGHT, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
@@ -83,7 +75,7 @@ def drawGrid(increment):
         text_obj=font_obj.render(str(round(float((count-10)*increment),2)),True,font_color)
         SCREEN.blit(text_obj,(WINDOW_WIDTH*(7/16)+(count*blockSize-blockSize*3/8),WINDOW_HEIGHT/2))
         count += 1
-        
+
     count = 0
     for b in range(20+1):
         text_obj=font_obj.render(str(-(round(float((count-10)*increment),2))),True,font_color)
@@ -95,7 +87,10 @@ def fight(allyTank,enemyTank,increment,obstacles):
     #coordinates of character
     x = (WINDOW_WIDTH*(23/32))+(allyTank[0]*blockSize)-20
     y = (WINDOW_HEIGHT/2)-(allyTank[1]*blockSize)-20
-    
+
+    original_ball_x = x + 20
+    original_ball_y = y + 12
+
     ball_x = x + 20
     ball_y = y + 12
     #width and height of character
@@ -127,25 +122,22 @@ def fight(allyTank,enemyTank,increment,obstacles):
         SCREEN.blit(playerImg, (x,y))
     def enemy(x, y):
         SCREEN.blit(enemyImg, (x,y))
-    
+
+
     def isCollision(enemyX, enemyY, ball_x, ball_y):
         distance = math.sqrt((math.pow(((enemyX)-ball_x),2)) + (math.pow(((enemyY+30)-ball_y), 2)))
-        if distance < 10:
+        if distance < blockSize:
             return True
         else:
             return False
 
 
-    run = True
-    #loop to run the game
 
-    #PROJECTILE
+    run = True
 
     entered_input = False
 
     active = True
-
-    start_time = pygame.time.get_ticks()
 
     while run:
         pygame.time.delay(30)
@@ -162,10 +154,6 @@ def fight(allyTank,enemyTank,increment,obstacles):
                         active = False
                     else:
                         user_text += event.unicode
-
-        #TIME
-        elapsed_time = pygame.time.get_ticks() - start_time
-
 
         collision = isCollision(enemyX, enemyY, ball_x, ball_y)
 
@@ -184,17 +172,31 @@ def fight(allyTank,enemyTank,increment,obstacles):
                 ball_x = x_dos + xval* 50
                 xval += .1
                 ball_y = y_dos - (math.tan(xval) * 50)
-                if elapsed_time > 5000:
-                    SCREEN.fill((0,0,0))
         else:
             active = True
-        '''
-        if collision != True and elapsed_time > 5000:
-            win.fill((0,0,0))
+
+
+        if (collision != True and (ball_y <=  0 or ball_x >= width)):
+            count = 1
+            SCREEN.fill((0,0,0))
+            drawGrid(eval("level"+str(count)).increment)
+            ball_x = original_ball_x
+            ball_y = original_ball_y
+            poly_x = 1
+
+            xval = 0
             active = True
+        elif (collision == True):
+            count += 1
+            if count == 3:
+                pygame.quit()
+            fight(eval("level"+str(count)).allyTank,eval("level"+str(count)).enemyTank,eval("level"+str(count)).increment,eval("level"+str(count)).obstacles)
         elif active == True:
-            win.fill((0,0,0))
-            '''
+            count = 1
+            SCREEN.fill((0,0,0))
+            drawGrid(eval("level"+str(count)).increment)
+
+
         pygame.draw.rect(SCREEN, color, input_rect, 2)
         text_surface = base_font.render(user_text, True, (255, 255, 255))
         SCREEN.blit(text_surface, (input_rect.x,input_rect.y+5))
@@ -208,12 +210,6 @@ def fight(allyTank,enemyTank,increment,obstacles):
         enemy(enemyX, enemyY)
         pygame.display.update()
 
-    pygame.quit()
 
 
-
-
-
-    
-    
 main()
