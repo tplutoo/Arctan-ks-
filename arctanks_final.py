@@ -13,7 +13,6 @@ import math
 
 #Currently only accepts basic functions: x - x^4, sin(x),cos(x),tan(x)
 
-
 pygame.init()
 
 root = tk.Tk()
@@ -238,10 +237,10 @@ def mainGame():
         y = (height/2)-(allyTank[1]*blockSize)-20
 
         original_ball_x = x + 20
-        original_ball_y = y + 12
+        original_ball_y = y + 20
 
         ball_x = x + 20
-        ball_y = y + 12
+        ball_y = y + 20
         #width and height of character
         vel = 2
 
@@ -253,10 +252,20 @@ def mainGame():
 
         tan_right_bound = x + 100;
 
-
         poly_x = 1
         poly_y = 200
 
+        #conditions for asin
+        asin_condition_finished = False
+        asin_part_1 = True
+
+        #conditions for acos
+        acos_condition_finished = False
+        acos_part_1 = True
+
+        #conditions for atan
+        atan_condition_finished = False
+        atan_part_1 = True
         pygame.display.set_caption("Space Invade")
 
         enemyX = (width*(23/32))+(enemyTank[0]*blockSize)-25
@@ -311,42 +320,101 @@ def mainGame():
 
             if active == False:
                 if user_text == "x":
-                    ball_x = x_dos + xval* 50
+                    ball_x = x_dos + xval* 55
                     xval += .1
-                    ball_y = y_dos - xval * 50
+                    ball_y = y_dos - xval * 55
                 elif user_text == "x^2":
-                    ball_x = x_dos + xval * 50
+                    ball_x = x_dos + xval * 55
                     xval += .1
-                    ball_y = y_dos - xval**2 * 50
+                    ball_y = y_dos - xval**2 * 55
                 elif user_text == "x^3":
-                    ball_x = x_dos + xval* 50
+                    ball_x = x_dos + xval* 55
                     xval += .1
-                    ball_y = y_dos - xval**3 * 50
+                    ball_y = y_dos - xval**3 * 55
                 elif user_text == "x^4":
-                    ball_x = x_dos + xval* 50
+                    ball_x = x_dos + xval* 55
                     xval += .1
-                    ball_y = y_dos - xval**4 * 50
+                    ball_y = y_dos - xval**4 * 55
                 elif user_text == "sin(x)":
                     if (collision != True ):
-                        ball_x = x_dos + xval* 50
+                        ball_x = x_dos + xval* 55
                         xval += .1
-                        ball_y = y_dos - (math.sin(xval) * 50)
-                elif user_text == "cos(x)" and active == False:
+                        ball_y = y_dos - (math.sin(xval) * 55)
+                elif user_text == "cos(x)":
                     if (collision != True):
-                        ball_x = x_dos + xval* 50
+                        ball_x = x_dos + xval * 55
                         xval += .1
-                        ball_y = y_cos - (math.cos(xval) * 50)
+                        ball_y = y_dos - (math.cos(xval) * 55)
                 elif user_text == "tan(x)":
                     if (collision != True and (ball_x < tan_right_bound)):
-                        ball_x = x_dos + xval* 50
+                        ball_x = x_dos + xval* 55
                         xval += .1
-                        ball_y = y_dos - (math.tan(xval) * 50)
+                        ball_y = y_dos - (math.tan(xval) * 55)
+                elif user_text == "arcsin(x)":
+                    if (collision != True):
+                        if (asin_part_1 == True):
+                            ball_x = x_dos + xval* 55
+                            xval += .1
+                            if (xval <= 1):
+                                ball_y = y_dos - (math.asin(xval) * 55)
+                            else:
+                                asin_part_1 = False
+                                xval = 0
+                                ball_x = original_ball_x
+                                ball_y = original_ball_y
+                        if (asin_part_1 == False):
+                            ball_x = x_dos + xval* 55
+                            xval -= .1
+                            if (xval >= -1):
+                                ball_y = y_dos - (math.asin(xval) * 55)
+                            else:
+                                asin_condition_finished = True
+                                asin_part_1 = True
+                elif user_text == "arccos(x)":
+                    if (collision != True):
+                        if (acos_part_1 == True):
+                            ball_x = x_dos + xval* 55
+                            xval += .1
+                            if (xval <= 1):
+                                ball_y = y_dos - (math.acos(xval) * 55)
+                            else:
+                                acos_part_1 = False
+                                xval = 0
+                                ball_x = original_ball_x
+                                ball_y = original_ball_y
+                        if (acos_part_1 == False):
+                            ball_x = x_dos + xval* 55
+                            xval -= .1
+                            if (xval >= -1):
+                                ball_y = y_dos - (math.acos(xval) * 55)
+                            else:
+                                acos_condition_finished = True
+                                acos_part_1 = True
+                elif user_text == "arctan(x)":
+                    if (collision != True):
+                        if (atan_part_1 == True):
+                            ball_x = x_dos + xval* 55
+                            xval += .1
+                            if (ball_x <= width):
+                                ball_y = y_dos - (math.atan(xval) * 55)
+                            else:
+                                atan_part_1 = False
+                                xval = 0
+                                ball_x = original_ball_x
+                                ball_y = original_ball_y
+                        if (atan_part_1 == False):
+                            ball_x = x_dos + xval* 55
+                            xval -= .1
+                            if (ball_x >= (width/2) - 120):
+                                ball_y = y_dos - (math.atan(xval) * 55)
+                            else:
+                                atan_condition_finished = True
+                                atan_part_1 = True
+
                 else:
                     active = True
 
-
             if (collision != True and (ball_y <=  0 or ball_x >= width)):
-                count = 1
                 SCREEN.fill((0,0,0))
                 drawGrid(eval("level"+str(count)).increment)
                 ball_x = original_ball_x
@@ -355,9 +423,35 @@ def mainGame():
 
                 xval = 0
                 active = True
+            elif (collision != True and ((asin_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                asin_condition_finished = False
+            elif (collision != True and ((acos_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                acos_condition_finished = False
+            elif (collision != True and ((atan_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                atan_condition_finished = False
             elif (collision == True):
                 break
-                #fight(eval("level"+str(count)).allyTank,eval("level"+str(count)).enemyTank,eval("level"+str(count)).increment,eval("level"+str(count)).obstacles)
             elif active == True:
                 count = 1
                 SCREEN.fill((0,0,0))
