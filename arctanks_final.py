@@ -188,8 +188,6 @@ def mainGame():
         font_obj=pygame.font.Font("coure.fon",25)
         blockSize = round(float((height/20)))
 
-
-
         icon = pygame.image.load('tank.png')
         pygame.display.set_icon(icon)
 
@@ -202,9 +200,8 @@ def mainGame():
 
         #Enemy
         enemyImg = pygame.image.load("enemy.png")
+
         enemyImg= pygame.transform.scale(enemyImg, enemy_size)
-
-
         count = 1
         while True:
             fight(eval("level"+str(count)).allyTank,eval("level"+str(count)).enemyTank,eval("level"+str(count)).increment,eval("level"+str(count)).obstacles)
@@ -216,7 +213,6 @@ def mainGame():
             for y in range(0, height, blockSize):
                 rect = pygame.Rect(x, y, blockSize, blockSize)
                 pygame.draw.rect(SCREEN, GREEN, rect, 1)
-
 
         count = 0
         for a in range(20+1):
@@ -236,6 +232,9 @@ def mainGame():
         x = (width*(23/32))+(allyTank[0]*blockSize)-20
         y = (height/2)-(allyTank[1]*blockSize)-20
 
+        preball_x = x + 20
+        preball_y = y + 20
+
         original_ball_x = x + 20
         original_ball_y = y + 20
 
@@ -248,7 +247,19 @@ def mainGame():
         x_dos = ball_x
         y_dos = ball_y
 
-        y_cos = ball_y + 60
+        #conditions for x^2
+        x_squared_condition_finished = False
+        x_squared_part_1 = True
+
+        #conditions for x^3
+        x_cubed_condition_finished = False
+        x_cubed_part_1 = True
+
+        #conditions for x^4
+        x_fourth_condition_finished = False
+        x_fourth_part_1 = True
+
+        #y_cos = ball_y + 60
 
         tan_right_bound = x + 100;
 
@@ -266,7 +277,7 @@ def mainGame():
         #conditions for atan
         atan_condition_finished = False
         atan_part_1 = True
-        pygame.display.set_caption("Space Invade")
+        pygame.display.set_caption("Arctan(ks)")
 
         enemyX = (width*(23/32))+(enemyTank[0]*blockSize)-25
         enemyY = (height/2)-(enemyTank[1]*blockSize) -25
@@ -288,11 +299,10 @@ def mainGame():
 
         def isCollision(enemyX, enemyY, ball_x, ball_y):
             distance = math.sqrt((math.pow(((enemyX)-ball_x),2)) + (math.pow(((enemyY+30)-ball_y), 2)))
-            if distance < blockSize:
+            if distance < blockSize - 17:
                 return True
             else:
                 return False
-
 
         run = True
 
@@ -300,8 +310,10 @@ def mainGame():
 
         active = True
 
+        preball_condition = True
+
         while run:
-            pygame.time.delay(30)
+            #pygame.time.delay(30)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -320,37 +332,91 @@ def mainGame():
 
             if active == False:
                 if user_text == "x":
+                    pygame.time.delay(30)
                     ball_x = x_dos + xval* 55
                     xval += .1
                     ball_y = y_dos - xval * 55
                 elif user_text == "x^2":
-                    ball_x = x_dos + xval * 55
-                    xval += .1
-                    ball_y = y_dos - xval**2 * 55
+                    pygame.time.delay(30)
+                    if (x_squared_part_1 == True):
+                        ball_x = x_dos + xval * 55
+                        xval += .1
+                        ball_y = y_dos - xval**2 * 55
+                        if (ball_y <= 0):
+                            xval = 0
+                            ball_x = original_ball_x
+                            ball_y = original_ball_y
+                            x_squared_part_1 = False
+                    elif (x_squared_part_1 == False):
+                        ball_x = x_dos + xval* 55
+                        xval -= .1
+                        ball_y = y_dos - xval**2 * 55
+                        if (ball_y <= 0):
+                            x_squared_condition_finished = True
+                            x_squared_part_1 = True
                 elif user_text == "x^3":
-                    ball_x = x_dos + xval* 55
-                    xval += .1
-                    ball_y = y_dos - xval**3 * 55
+                    pygame.time.delay(30)
+                    if (x_cubed_part_1 == True):
+                        ball_x = x_dos + xval* 55
+                        xval += .1
+                        ball_y = y_dos - xval**3 * 55
+                        if (ball_y <= 0):
+                            xval = 0
+                            ball_x = original_ball_x
+                            ball_y = original_ball_y
+                            x_cubed_part_1 = False
+                    elif (x_cubed_part_1 == False):
+                        ball_x = x_dos + xval* 55
+                        xval -= .1
+                        ball_y = y_dos - xval**3 * 55
+                        if (ball_y >= height):
+                            x_cubed_part_1 = True
+                            x_cubed_condition_finished = True
                 elif user_text == "x^4":
-                    ball_x = x_dos + xval* 55
-                    xval += .1
-                    ball_y = y_dos - xval**4 * 55
+                    pygame.time.delay(30)
+                    if (x_fourth_part_1 == True):
+                        ball_x = x_dos + xval* 55
+                        xval += .1
+                        ball_y = y_dos - xval**4 * 55
+                        if (ball_y <= 0):
+                            xval = 0
+                            ball_x = original_ball_x
+                            ball_y = original_ball_y
+                            x_fourth_part_1 = False
+                    elif (x_fourth_part_1 == False):
+                        ball_x = x_dos + xval* 55
+                        xval -= .1
+                        ball_y = y_dos - xval**4 * 55
+                        if (ball_y <= 0):
+                            x_fourth_part_1 = True
+                            x_fourth_condition_finished = True
                 elif user_text == "sin(x)":
+                    pygame.time.delay(25)
                     if (collision != True ):
                         ball_x = x_dos + xval* 55
                         xval += .1
                         ball_y = y_dos - (math.sin(xval) * 55)
                 elif user_text == "cos(x)":
-                    if (collision != True):
+                    pygame.time.delay(5)
+                    if preball_condition == True:
+                        ball_y -= 1
+                        SCREEN.fill((0,0,0))
+                        drawGrid(eval("level"+str(count)).increment)
+                        if (ball_y == (y_dos - (math.cos(xval) * 55))):
+                            preball_condition = False
+                    else:
+                        pygame.time.delay(25)
                         ball_x = x_dos + xval * 55
                         xval += .1
                         ball_y = y_dos - (math.cos(xval) * 55)
                 elif user_text == "tan(x)":
+                    pygame.time.delay(25)
                     if (collision != True and (ball_x < tan_right_bound)):
                         ball_x = x_dos + xval* 55
                         xval += .1
                         ball_y = y_dos - (math.tan(xval) * 55)
                 elif user_text == "arcsin(x)":
+                    pygame.time.delay(25)
                     if (collision != True):
                         if (asin_part_1 == True):
                             ball_x = x_dos + xval* 55
@@ -371,8 +437,16 @@ def mainGame():
                                 asin_condition_finished = True
                                 asin_part_1 = True
                 elif user_text == "arccos(x)":
-                    if (collision != True):
+                    pygame.time.delay(5)
+                    if preball_condition == True:
+                        ball_y -= 1
+                        SCREEN.fill((0,0,0))
+                        drawGrid(eval("level"+str(count)).increment)
+                        if (ball_y <= (y_dos - (math.acos(xval) * 55))):
+                            preball_condition = False
+                    else:
                         if (acos_part_1 == True):
+                            pygame.time.delay(30)
                             ball_x = x_dos + xval* 55
                             xval += .1
                             if (xval <= 1):
@@ -383,6 +457,7 @@ def mainGame():
                                 ball_x = original_ball_x
                                 ball_y = original_ball_y
                         if (acos_part_1 == False):
+                            pygame.time.delay(30)
                             ball_x = x_dos + xval* 55
                             xval -= .1
                             if (xval >= -1):
@@ -390,7 +465,10 @@ def mainGame():
                             else:
                                 acos_condition_finished = True
                                 acos_part_1 = True
+                                ball_x = original_ball_x
+                                ball_y = original_ball_y
                 elif user_text == "arctan(x)":
+                    pygame.time.delay(25)
                     if (collision != True):
                         if (atan_part_1 == True):
                             ball_x = x_dos + xval* 55
@@ -408,9 +486,8 @@ def mainGame():
                             if (ball_x >= (width/2) - 120):
                                 ball_y = y_dos - (math.atan(xval) * 55)
                             else:
-                                atan_condition_finished = True
                                 atan_part_1 = True
-
+                                atan_condition_finished = True
                 else:
                     active = True
 
@@ -423,6 +500,34 @@ def mainGame():
 
                 xval = 0
                 active = True
+                preball_condition = True
+            elif (collision != True and ((x_squared_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                x_squared_condition_finished = False
+            elif (collision != True and ((x_cubed_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                x_cubed_condition_finished = False
+            elif (collision != True and ((x_fourth_condition_finished == True))):
+                SCREEN.fill((0,0,0))
+                drawGrid(eval("level"+str(count)).increment)
+                ball_x = original_ball_x
+                ball_y = original_ball_y
+
+                xval = 0
+                active = True
+                x_fourth_condition_finished = False
             elif (collision != True and ((asin_condition_finished == True))):
                 SCREEN.fill((0,0,0))
                 drawGrid(eval("level"+str(count)).increment)
@@ -441,6 +546,7 @@ def mainGame():
                 xval = 0
                 active = True
                 acos_condition_finished = False
+                preball_condition = True
             elif (collision != True and ((atan_condition_finished == True))):
                 SCREEN.fill((0,0,0))
                 drawGrid(eval("level"+str(count)).increment)
@@ -463,9 +569,6 @@ def mainGame():
             SCREEN.blit(text_surface, (input_rect.x,input_rect.y+5))
 
             pygame.draw.circle(SCREEN, (255, 0, 0), (ball_x, ball_y), 5)
-
-            #for i in obstacles:
-                #pygame.draw.rect(SCREEN, BLUE, pygame.Rect((width*(23/32)-i[2]*blockSize/2)+(i[0]*blockSize),(height/2)-(i[1]*blockSize),i[2]*blockSize,i[3]*blockSize),2,3)
 
             player(x, y)
             enemy(enemyX, enemyY)
