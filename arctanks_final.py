@@ -260,11 +260,7 @@ def mainGame():
         x_fourth_part_1 = True
 
         #y_cos = ball_y + 60
-
         tan_right_bound = x + 100;
-
-        poly_x = 1
-        poly_y = 200
 
         #conditions for asin
         asin_condition_finished = False
@@ -496,7 +492,6 @@ def mainGame():
                 drawGrid(eval("level"+str(count)).increment)
                 ball_x = original_ball_x
                 ball_y = original_ball_y
-                poly_x = 1
 
                 xval = 0
                 active = True
